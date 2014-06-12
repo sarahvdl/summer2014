@@ -1,0 +1,104 @@
+#:kivy 1.8.0
+
+<EMGData>:
+	orientation: 'vertical'
+	padding: 10
+
+	Label:
+		text: '[color=ffffff]EMG Data Trace[/color]'
+		#center_x: my_graph.center_x
+		font_size: 50
+		markup: True
+		size_hint_y: None
+
+	#if decide to use Scatter, must indent the BoxLayout so that it is a part of the Scatter
+	#Scatter:
+		#do_rotation: False
+		#do_scale: False
+		#do_translation_y: False
+	
+	BoxLayout:
+
+		Slider:
+			orientation: 'vertical'
+			range: 1,10
+			value: 1
+			step: 1
+			size_hint_x: 0.1
+			on_value: my_graph.y_ticks_major = 0.5*self.value
+			on_value: my_graph.ymin = -2*self.value
+			on_value: my_graph.ymax = 2*self.value
+
+		Graph:
+			id: my_graph
+			xlabel: 'Time'
+			ylabel: 'Unsure'
+			x_ticks_major: 0.2
+			y_ticks_major: 0.5
+			x_grid_label: True
+			y_grid_label: True
+			x_grid: True
+			y_grid: True
+			xmin: -0
+			xmax: 2
+			ymin: -2
+			ymax: 2
+			background_color: [0,0,0,1]
+			tick_color: [255,255,255,1]
+			border_color: [255,255,255,1]
+			padding: 10
+
+	Slider:
+		id: x_slider
+		range: 1,10
+		value: 1
+		step: 1
+		size_hint_y: 0.2
+		size_hint_x: 0.9
+		center_x: my_graph.center_x + 35
+		padding: 10
+
+		#do not want magic numbers
+		#want values to be current start/end points (not necessarily the ones when initiated)
+		#(could have been changed using paging)
+		#on_value: my_graph.xmax = 2*my_graph.xmax
+		#on_value: my_graph.x_ticks_major = my_graph.xmax/10
+	
+		#on_value: my_graph.x_ticks_major = 0.2* (2**self.value)
+		
+		on_value: root.scale(value = x_slider.value, slider = 'x_slider')
+
+	BoxLayout:
+		id: buttons
+		size_hint_y: None
+		height: 40
+		padding: 10
+
+		Button:
+			text: '[color=ffffff]Left[/color]'
+			halign: 'left'
+			font_size: 20
+			markup: True
+			size_hint_y: None
+			valign: 'top'
+			height: buttons.height
+
+			#do not want to go past zero
+			on_press: my_graph.xmin = my_graph.xmin - 2
+			on_press: my_graph.xmax = my_graph.xmax - 2
+
+		Button:
+
+			id: r_button
+			text: '[color=ffffff]Right[/color]'
+			font_size: 20
+			markup: True
+			size_hint_y: None
+			height: buttons.height
+
+			#do not want to go past end of data
+			on_press: my_graph.xmin = my_graph.xmin+2
+			on_press: my_graph.xmax = my_graph.xmax+2
+				
+
+			
